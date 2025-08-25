@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 
+/* biome-ignore lint/suspicious/noUnknownAtRules: <explanation> */
 @theme {
     --font-sans: "Open Sans", ui-sans-serif, system-ui, sans-serif;
 

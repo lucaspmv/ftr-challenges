@@ -5,7 +5,8 @@ import { tv, type VariantProps } from 'tailwind-variants'
 const textField = tv({
   slots: {
     root: 'flex flex-col w-full gap-y-2 group',
-    label: 'text-xs font-bold text-gray-500 group-focus-within:text-blue-base ',
+    label:
+      'text-xs font-medium group-focus-within:font-bold text-gray-500 group-focus-within:text-blue-base ',
     input:
       'w-full rounded-lg border-[1px] border-gray-300 ' +
       'bg-white text-gray-600 placeholder:text-gray-400 outline-none ' +
@@ -43,6 +44,7 @@ export type InputProps = NativeInput &
     errorText?: string
   }
 
+// TODO: Remove size and handle responsiveness here
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   { label, error, errorText, className, id, size, ...rest },
   ref

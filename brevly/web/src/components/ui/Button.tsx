@@ -59,6 +59,7 @@ export type ButtonProps = ComponentProps<'button'> &
     rightIcon?: ReactNode
   }
 
+// TODO: Remove size and handle responsiveness here
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(
     {

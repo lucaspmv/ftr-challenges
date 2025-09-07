@@ -12,16 +12,17 @@ const buttonStyles = tv({
   variants: {
     variant: {
       primary: {
-        base: 'w-full max-w-[352px] text-white bg-blue-base hover:bg-blue-dark disabled:bg-blue-base/50',
+        base:
+          'w-full max-w-[352px] text-white bg-blue-base hover:bg-blue-dark disabled:bg-blue-base/50 ' +
+          'h-9 px-3 md:h-12 md:px-6',
+        label: 'text-sm md:text-base',
       },
       secondary: {
-        base: 'text-gray-500 bg-gray-200 border border-transparent hover:border-blue-base disabled:border-transparent disabled:opacity-50',
+        base:
+          'text-gray-500 bg-gray-200 border border-transparent hover:border-blue-base ' +
+          'disabled:border-transparent disabled:opacity-50 h-8 px-2 rounded-sm',
+        label: 'text-sm',
       },
-    },
-    size: {
-      sm: { label: 'text-sm' },
-      md: {},
-      lg: {},
     },
     loading: {
       true: { label: 'opacity-0' },
@@ -29,24 +30,8 @@ const buttonStyles = tv({
     },
   },
 
-  compoundVariants: [
-    {
-      variant: 'primary',
-      size: 'sm',
-      class: { base: 'h-9 px-3' },
-    },
-    { variant: 'primary', size: 'md', class: { base: 'h-10 px-4' } },
-    { variant: 'primary', size: 'lg', class: { base: 'h-12 px-6' } },
-
-    {
-      variant: 'secondary',
-      class: { base: 'h-8 px-2 rounded-sm', label: 'text-sm' },
-    },
-  ],
-
   defaultVariants: {
     variant: 'primary',
-    size: 'lg',
     loading: false,
   },
 })
@@ -59,12 +44,10 @@ export type ButtonProps = ComponentProps<'button'> &
     rightIcon?: ReactNode
   }
 
-// TODO: Remove size and handle responsiveness here
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   function Button(
     {
       variant,
-      size,
       loading,
       leftIcon,
       rightIcon,
@@ -75,11 +58,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) {
-    const { base, label, spinner } = buttonStyles({
-      variant,
-      size,
-      loading,
-    })
+    const { base, label, spinner } = buttonStyles({ variant, loading })
 
     return (
       <button

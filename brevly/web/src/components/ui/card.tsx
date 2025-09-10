@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { tv } from 'tailwind-variants'
 
 type CardProps = {
   title?: string
@@ -7,16 +8,26 @@ type CardProps = {
   className?: string
 }
 
+const card = tv({
+  base: 'rounded-lg bg-white p-6 md:p-8',
+})
+
+const cardHeader = tv({
+  base: 'flex items-center justify-between mb-4 md:mb-6',
+})
+
+const cardTitle = tv({
+  base: 'text-md md:text-lg font-bold text-gray-600',
+})
+
 export function Card({ title, action, children, className }: CardProps) {
+  const hasHeader = !!(title || action)
+
   return (
-    <section className={`rounded-lg bg-white p-6 md:p-8 ${className ?? ''}`}>
-      {(title || action) && (
-        <div className="mb-4 md:mb-6 flex items-center justify-between">
-          {title && (
-            <h2 className="text-md md:text-lg font-bold text-gray-600">
-              {title}
-            </h2>
-          )}
+    <section className={card({ className })}>
+      {hasHeader && (
+        <div className={cardHeader()}>
+          {title && <h2 className={cardTitle()}>{title}</h2>}
           {action}
         </div>
       )}

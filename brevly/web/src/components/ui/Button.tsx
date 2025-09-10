@@ -3,7 +3,7 @@ import { tv, type VariantProps } from 'tailwind-variants'
 
 const buttonStyles = tv({
   slots: {
-    base: 'relative inline-flex items-center justify-center gap-2 rounded-lg disabled:cursor-not-allowed',
+    base: 'relative inline-flex items-center justify-center gap-2 rounded-lg disabled:cursor-not-allowed cursor-pointer',
     label: 'font-semibold transition-colors',
     spinner:
       'absolute inline-block h-5 w-5 animate-spin rounded-full border-2 border-current border-t-transparent',

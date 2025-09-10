@@ -14,7 +14,7 @@ export function Home() {
   }
 
   return (
-    <div className="min-h-dvh py-8 md:py-[88px] px-3">
+    <main className="min-h-dvh py-8 md:py-[88px] px-3">
       <div className="mx-auto w-full max-w-[980px]">
         <header className="mb-6 md:mb-8 flex justify-center md:justify-start">
           <img src={Logo} alt="Brev.ly" className="h-6 md:h-8" />
@@ -102,6 +102,6 @@ export function Home() {
           </Card>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

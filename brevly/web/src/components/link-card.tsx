@@ -38,7 +38,7 @@ export function LinkCard({
       )}
     >
       <div className="flex flex-col max-w-[140px] md:max-w-[360px]">
-        <a href={shortUrl}>
+        <a href={shortUrl.replace('brev.ly', '')}>
           <p className="truncate text-sm md:text-base text-blue-base font-semibold hover:underline">
             {shortUrl}
           </p>

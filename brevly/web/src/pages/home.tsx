@@ -8,6 +8,7 @@ import { Card } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { normalizeSlug, normalizeUrl, slugRegex } from '../helpers/form'
 import { createLink } from '../http/create-link'
+import { deleteLink } from '../http/delete-link'
 import type { Link } from '../types/links'
 
 type LinkState = Map<string, Link>
@@ -15,7 +16,7 @@ type LinkState = Map<string, Link>
 export function Home() {
   const [links, setLinks] = useState<LinkState>(new Map<string, Link>())
   const [error, setError] = useState<'both' | 'originalUrl' | 'slug'>()
-  const [loading, setLoading] = useState<'create-link'>()
+  const [loading, setLoading] = useState<'create-link' | 'delete-link'>()
 
   const isEmpty = useMemo(() => links.size === 0, [links.size])
 
@@ -92,6 +93,34 @@ export function Home() {
     }
   }
 
+  const handleDelete = async (linkId: string) => {
+    const link = links.get(linkId)
+    const label = link ? link.slug : 'este link'
+
+    const ok = window.confirm(
+      `Tem certeza que deseja excluir ${label}? Esta ação não pode ser desfeita.`
+    )
+    if (!ok) return
+
+    setLoading('delete-link')
+
+    try {
+      await deleteLink(linkId)
+
+      setLinks(prev => {
+        const next = new Map(prev)
+        next.delete(linkId)
+        return next
+      })
+    } catch {
+      alert(
+        'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.'
+      )
+    } finally {
+      setLoading(undefined)
+    }
+  }
+
   return (
     <main className="min-h-dvh py-8 md:py-[88px] px-3">
       <div className="mx-auto w-full max-w-[980px]">
@@ -133,7 +162,7 @@ export function Home() {
               <Button
                 type="submit"
                 className="mt-1 md:mt-2"
-                loading={loading === 'create-link'}
+                loading={loading === 'create-link' || loading === 'delete-link'}
               >
                 Salvar link
               </Button>
@@ -168,9 +197,8 @@ export function Home() {
                       {Array.from(links.values()).map(link => (
                         <LinkCard
                           key={link.id}
-                          shortUrl={link.slug}
-                          originalUrl={link.originalUrl}
-                          accessCount={link.accessCount}
+                          link={link}
+                          onDelete={handleDelete}
                         />
                       ))}
                     </div>

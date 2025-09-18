@@ -1,16 +1,15 @@
 import { TrashIcon } from '@phosphor-icons/react'
 import { CopyIcon } from '@phosphor-icons/react/dist/ssr'
 import type { HTMLAttributes } from 'react'
+import type { Link } from '../types/links'
 import { IconButton } from './ui/icon-button'
 
 type LinkCardProps = {
-  shortUrl: string
-  originalUrl: string
-  accessCount: number
+  link: Link
   className?: string
   onCopy?: (shortUrl: string) => void
   onOpen?: (originalUrl: string) => void
-  onDelete?: () => void
+  onDelete: (linkId: string) => Promise<void>
 } & HTMLAttributes<HTMLDivElement>
 
 function cn(...xs: Array<string | false | null | undefined>) {
@@ -18,15 +17,14 @@ function cn(...xs: Array<string | false | null | undefined>) {
 }
 
 export function LinkCard({
-  shortUrl,
-  originalUrl,
-  accessCount,
+  link,
   className,
   onCopy,
   onOpen,
   onDelete,
   ...divProps
 }: LinkCardProps) {
+  const { id, slug: shortUrl, originalUrl, accessCount } = link
   const handleCopy = () => {}
 
   return (
@@ -59,7 +57,7 @@ export function LinkCard({
             icon={<CopyIcon className="h-3 w-3 md:h-4 md:w-4" />}
           />
           <IconButton
-            onClick={onDelete}
+            onClick={() => onDelete(id)}
             icon={<TrashIcon className="h-3 w-3 md:h-4 md:w-4" />}
           />
         </div>

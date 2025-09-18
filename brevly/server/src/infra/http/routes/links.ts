@@ -57,4 +57,23 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
       })
     }
   )
+  server.delete(
+    '/links/:linkId',
+    {
+      schema: {
+        summary: 'Delete link by link id',
+        params: z.object({
+          linkId: z.string().nonempty(),
+        }),
+        response: {
+          204: z.void(),
+        },
+      },
+    },
+    async (req, reply) => {
+      const { linkId } = req.params
+      await db.delete(schema.links).where(eq(schema.links.id, linkId))
+      return reply.status(204).send()
+    }
+  )
 }

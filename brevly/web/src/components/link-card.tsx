@@ -1,14 +1,13 @@
 import { TrashIcon } from '@phosphor-icons/react'
 import { CopyIcon } from '@phosphor-icons/react/dist/ssr'
 import type { HTMLAttributes } from 'react'
+import { toast } from 'sonner'
 import type { Link } from '../types/links'
 import { IconButton } from './ui/icon-button'
 
 type LinkCardProps = {
   link: Link
   className?: string
-  onCopy?: (shortUrl: string) => void
-  onOpen?: (originalUrl: string) => void
   onDelete: (linkId: string) => Promise<void>
 } & HTMLAttributes<HTMLDivElement>
 
@@ -19,13 +18,21 @@ function cn(...xs: Array<string | false | null | undefined>) {
 export function LinkCard({
   link,
   className,
-  onCopy,
-  onOpen,
   onDelete,
   ...divProps
 }: LinkCardProps) {
   const { id, slug: shortUrl, originalUrl, accessCount } = link
-  const handleCopy = () => {}
+  const handleCopy = async () => {
+    try {
+      const appUrl = import.meta.env.VITE_FRONTEND_URL
+      const fullUrl = `${appUrl}/${shortUrl.replace('brev.ly/', '')}`
+
+      await navigator.clipboard.writeText(fullUrl)
+      toast.success('Link copiado!', { duration: 3000 })
+    } catch {
+      toast.error('Não foi possível copiar o link', { duration: 5000 })
+    }
+  }
 
   return (
     <div

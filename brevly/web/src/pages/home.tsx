@@ -1,6 +1,7 @@
 import { DownloadSimpleIcon, LinkIcon } from '@phosphor-icons/react/dist/ssr'
 import * as ScrollArea from '@radix-ui/react-scroll-area'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { toast } from 'sonner'
 import Logo from '../assets/svgs/Logo.svg'
 import { LinkCard } from '../components/link-card'
 import { Button } from '../components/ui/button'
@@ -9,6 +10,7 @@ import { Input } from '../components/ui/input'
 import { normalizeSlug, normalizeUrl, slugRegex } from '../helpers/form'
 import { createLink } from '../http/create-link'
 import { deleteLink } from '../http/delete-link'
+import { getLinks } from '../http/get-links'
 import type { Link } from '../types/links'
 
 type LinkState = Map<string, Link>
@@ -16,9 +18,18 @@ type LinkState = Map<string, Link>
 export function Home() {
   const [links, setLinks] = useState<LinkState>(new Map<string, Link>())
   const [error, setError] = useState<'both' | 'originalUrl' | 'slug'>()
-  const [loading, setLoading] = useState<'create-link' | 'delete-link'>()
+  const [loading, setLoading] = useState<
+    'create-link' | 'delete-link' | 'get-links' | 'idle'
+  >('get-links')
 
   const isEmpty = useMemo(() => links.size === 0, [links.size])
+
+  const orderedLinks = useMemo(() => {
+    return Array.from(links.entries()).sort(
+      (a, b) =>
+        new Date(b[1].createdAt).getTime() - new Date(a[1].createdAt).getTime()
+    )
+  }, [links])
 
   const clearFieldError = (field: 'originalUrl' | 'slug') =>
     setError(prev => (prev === 'both' || prev === field ? undefined : prev))
@@ -79,17 +90,22 @@ export function Home() {
 
       setError(undefined)
       form.reset()
+
+      toast.success('Link criado com sucesso!', { duration: 3000 })
       // biome-ignore lint/suspicious/noExplicitAny: error type
     } catch (err: any) {
       if (err.status === 409) {
-        alert('Este item já existe. Verifique e tente novamente.')
+        toast.error('Este item já existe. Verifique e tente novamente.', {
+          duration: 5000,
+        })
       } else {
-        alert(
-          'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.'
+        toast.error(
+          'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+          { duration: 5000 }
         )
       }
     } finally {
-      setLoading(undefined)
+      setLoading('idle')
     }
   }
 
@@ -112,14 +128,38 @@ export function Home() {
         next.delete(linkId)
         return next
       })
+      toast.success('Link deletado com sucesso!', { duration: 3000 })
     } catch {
-      alert(
-        'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.'
+      toast.error(
+        'Ocorreu um erro inesperado. Por favor, tente novamente mais tarde.',
+        { duration: 5000 }
       )
     } finally {
-      setLoading(undefined)
+      setLoading('idle')
     }
   }
+
+  const init = async () => {
+    try {
+      const response = await getLinks()
+
+      if (response.data) {
+        setLinks(new Map(response.data.map(l => [l.id, l])))
+      }
+    } catch {
+      toast.error(
+        'Não foi possível carregar os links no momento. Tente novamente em instantes.',
+        { duration: 5000 }
+      )
+    } finally {
+      setLoading('idle')
+    }
+  }
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: init
+  useEffect(() => {
+    init()
+  }, [])
 
   return (
     <main className="min-h-dvh py-8 md:py-[88px] px-3">
@@ -176,7 +216,7 @@ export function Home() {
               <Button
                 leftIcon={<DownloadSimpleIcon />}
                 variant="secondary"
-                disabled
+                disabled={links.size === 0}
               >
                 Baixar CSV
               </Button>
@@ -185,7 +225,14 @@ export function Home() {
             <div className="border-t-1 border-gray-200">
               <ScrollArea.Root type="scroll" className="overflow-hidden">
                 <ScrollArea.Viewport className="max-h-[360px]">
-                  {isEmpty ? (
+                  {loading === 'get-links' ? (
+                    <div className="flex justify-center items-center my-6 md:my-8">
+                      <div className="h-6 w-6 border-2 border-gray-300 border-t-blue-base rounded-full animate-spin"></div>
+                      <span className="ml-3 text-sm text-gray-500">
+                        Carregando links...
+                      </span>
+                    </div>
+                  ) : isEmpty ? (
                     <div className="flex flex-col items-center my-6 md:my-8 gap-3">
                       <LinkIcon size={32} className="text-gray-400" />
                       <span className="text-xs uppercase tracking-wide text-gray-500">
@@ -194,9 +241,9 @@ export function Home() {
                     </div>
                   ) : (
                     <div className="flex flex-col">
-                      {Array.from(links.values()).map(link => (
+                      {orderedLinks.map(([linkId, link]) => (
                         <LinkCard
-                          key={link.id}
+                          key={linkId}
                           link={link}
                           onDelete={handleDelete}
                         />

@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { Toaster } from 'sonner'
 import { Home } from './pages/home'
 import { NotFound } from './pages/not-found'
 import { Redirect } from './pages/redirect'
@@ -11,5 +12,10 @@ const router = createBrowserRouter([
 ])
 
 export function App() {
-  return <RouterProvider router={router} />
+  return (
+    <>
+      <RouterProvider router={router} />
+      <Toaster richColors position="top-right" />
+    </>
+  )
 }

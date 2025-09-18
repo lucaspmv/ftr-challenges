@@ -76,4 +76,30 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
       return reply.status(204).send()
     }
   )
+  server.get(
+    '/links',
+    {
+      schema: {
+        summary: 'List links',
+        response: {
+          200: z.object({
+            data: z.array(LinkBase),
+          }),
+        },
+      },
+    },
+    async (_req, reply) => {
+      const rows = await db.query.links.findMany()
+
+      const data = rows.map(r => ({
+        id: r.id,
+        slug: r.slug,
+        originalUrl: r.originalUrl,
+        accessCount: r.accessCount ?? 0,
+        createdAt: r.createdAt?.toISOString?.(),
+      }))
+
+      return reply.status(200).send({ data })
+    }
+  )
 }

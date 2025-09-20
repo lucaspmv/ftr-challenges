@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Link } from '../types/links'
+import type { Link } from '../../types/links'
 
 interface GetLinksResponseDTO {
   data: Link[]

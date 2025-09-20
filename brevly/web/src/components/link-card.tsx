@@ -8,7 +8,7 @@ import { IconButton } from './ui/icon-button'
 type LinkCardProps = {
   link: Link
   className?: string
-  onDelete: (linkId: string) => Promise<void>
+  onDelete: (link: Link) => Promise<void>
 } & HTMLAttributes<HTMLDivElement>
 
 function cn(...xs: Array<string | false | null | undefined>) {
@@ -21,7 +21,7 @@ export function LinkCard({
   onDelete,
   ...divProps
 }: LinkCardProps) {
-  const { id, slug: shortUrl, originalUrl, accessCount } = link
+  const { slug: shortUrl, originalUrl, accessCount } = link
   const handleCopy = async () => {
     try {
       const appUrl = import.meta.env.VITE_FRONTEND_URL
@@ -55,7 +55,7 @@ export function LinkCard({
 
       <div className="ml-2 flex shrink-0 items-center gap-3">
         <span className="whitespace-nowrap text-xs text-gray-500">
-          {accessCount} acessos
+          {accessCount} {accessCount === 1 ? 'acesso' : 'acessos'}
         </span>
 
         <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export function LinkCard({
             icon={<CopyIcon className="h-3 w-3 md:h-4 md:w-4" />}
           />
           <IconButton
-            onClick={() => onDelete(id)}
+            onClick={() => onDelete(link)}
             icon={<TrashIcon className="h-3 w-3 md:h-4 md:w-4" />}
           />
         </div>

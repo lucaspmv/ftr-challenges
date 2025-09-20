@@ -8,9 +8,9 @@ import { Button } from '../components/ui/button'
 import { Card } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { normalizeSlug, normalizeUrl, slugRegex } from '../helpers/form'
-import { createLink } from '../http/create-link'
-import { deleteLink } from '../http/delete-link'
-import { getLinks } from '../http/get-links'
+import { createLink } from '../http/links/create-link'
+import { deleteLink } from '../http/links/delete-link'
+import { getLinks } from '../http/links/get-links'
 import type { Link } from '../types/links'
 
 type LinkState = Map<string, Link>
@@ -109,9 +109,8 @@ export function Home() {
     }
   }
 
-  const handleDelete = async (linkId: string) => {
-    const link = links.get(linkId)
-    const label = link ? link.slug : 'este link'
+  const handleDelete = async (link: Link) => {
+    const label = link.slug
 
     const ok = window.confirm(
       `Tem certeza que deseja excluir ${label}? Esta ação não pode ser desfeita.`
@@ -121,11 +120,11 @@ export function Home() {
     setLoading('delete-link')
 
     try {
-      await deleteLink(linkId)
+      await deleteLink(link.slug)
 
       setLinks(prev => {
         const next = new Map(prev)
-        next.delete(linkId)
+        next.delete(link.id)
         return next
       })
       toast.success('Link deletado com sucesso!', { duration: 3000 })

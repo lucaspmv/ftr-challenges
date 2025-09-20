@@ -21,7 +21,10 @@
     "typescript": "^5.9.2"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.893.0",
+    "@aws-sdk/lib-storage": "^3.893.0",
     "@fastify/cors": "^11.1.0",
+    "csv-stringify": "^6.6.0",
     "drizzle-orm": "^0.44.5",
     "fastify": "^5.6.0",
     "fastify-type-provider-zod": "^6.0.0",

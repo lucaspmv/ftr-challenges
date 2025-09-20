@@ -1,6 +1,7 @@
 import { eq, sql } from 'drizzle-orm'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
+import { exportLinks } from '@/app/functions/export-links'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 
@@ -140,9 +141,9 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
         createdAt: found.createdAt?.toISOString?.(),
       }
 
-      return {
+      return reply.status(200).send({
         data,
-      }
+      })
     }
   )
   server.patch(
@@ -173,6 +174,23 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
       }
 
       return reply.status(204).send()
+    }
+  )
+  server.post(
+    '/links/exports',
+    {
+      schema: {
+        summary: 'Export links CSV to R2 and return public URL',
+        response: {
+          200: z.object({
+            reportUrl: z.url(),
+          }),
+        },
+      },
+    },
+    async (_req, reply) => {
+      const { reportUrl } = await exportLinks()
+      return reply.status(200).send({ reportUrl })
     }
   )
 }

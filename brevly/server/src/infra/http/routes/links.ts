@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { eq, sql } from 'drizzle-orm'
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 import { db } from '@/infra/db'
@@ -17,6 +17,10 @@ const LinkBase = z.object({
 const CreateLinkBody = z.object({
   originalUrl: z.url(),
   slug: z.string().regex(slugRegex),
+})
+
+const SlugParams = z.object({
+  slug: z.string().nonempty(),
 })
 
 export const linksRoute: FastifyPluginAsyncZod = async server => {
@@ -58,21 +62,29 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
     }
   )
   server.delete(
-    '/links/:linkId',
+    '/links/:slug',
     {
       schema: {
-        summary: 'Delete link by link id',
-        params: z.object({
-          linkId: z.string().nonempty(),
-        }),
+        summary: 'Delete link by slug',
+        params: SlugParams,
         response: {
           204: z.void(),
+          404: z.object({ message: z.string() }),
         },
       },
     },
     async (req, reply) => {
-      const { linkId } = req.params
-      await db.delete(schema.links).where(eq(schema.links.id, linkId))
+      const { slug } = req.params
+
+      const deleted = await db
+        .delete(schema.links)
+        .where(eq(schema.links.slug, `brev.ly/${slug}`))
+        .returning({ id: schema.links.id })
+
+      if (deleted.length === 0) {
+        return reply.status(404).send({ message: 'Link não encontrado' })
+      }
+
       return reply.status(204).send()
     }
   )
@@ -100,6 +112,67 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
       }))
 
       return reply.status(200).send({ data })
+    }
+  )
+  server.get(
+    '/links/:slug',
+    {
+      schema: {
+        summary: 'Get link by slug',
+        params: SlugParams,
+        response: {
+          200: z.object({
+            data: LinkBase,
+          }),
+          404: z.object({ message: z.literal('not found') }),
+        },
+      },
+    },
+    async (req, reply) => {
+      const { slug } = req.params
+      const found = await db.query.links.findFirst({
+        where: eq(schema.links.slug, `brev.ly/${slug}`),
+      })
+      if (!found) return reply.status(404).send({ message: 'not found' })
+
+      const data = {
+        ...found,
+        createdAt: found.createdAt?.toISOString?.(),
+      }
+
+      return {
+        data,
+      }
+    }
+  )
+  server.patch(
+    '/links/:slug/access',
+    {
+      schema: {
+        summary: 'Increment access count',
+        params: SlugParams,
+        response: {
+          204: z.void(),
+          404: z.object({ message: z.literal('not found') }),
+        },
+      },
+    },
+    async (req, reply) => {
+      const { slug } = req.params
+
+      const updated = await db
+        .update(schema.links)
+        .set({
+          accessCount: sql`${schema.links.accessCount} + 1`,
+        })
+        .where(eq(schema.links.slug, `brev.ly/${slug}`))
+        .returning()
+
+      if (!updated[0]) {
+        return reply.status(404).send({ message: 'not found' })
+      }
+
+      return reply.status(204).send()
     }
   )
 }

@@ -5,11 +5,10 @@ import { exportLinks } from '@/app/functions/export-links'
 import { db } from '@/infra/db'
 import { schema } from '@/infra/db/schemas'
 
-const slugRegex = /^brev\.ly\/[a-zA-Z0-9._-]{3,60}$/
 
 const LinkBase = z.object({
   id: z.string().nonempty(),
-  slug: z.string().regex(slugRegex),
+  slug: z.string().nonempty(),
   originalUrl: z.url(),
   accessCount: z.number().int().nonnegative(),
   createdAt: z.iso.datetime(),
@@ -17,7 +16,7 @@ const LinkBase = z.object({
 
 const CreateLinkBody = z.object({
   originalUrl: z.url(),
-  slug: z.string().regex(slugRegex),
+  slug: z.string().nonempty(),
 })
 
 const SlugParams = z.object({
@@ -79,7 +78,7 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
 
       const deleted = await db
         .delete(schema.links)
-        .where(eq(schema.links.slug, `brev.ly/${slug}`))
+        .where(eq(schema.links.slug, slug))
         .returning({ id: schema.links.id })
 
       if (deleted.length === 0) {
@@ -132,7 +131,7 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
     async (req, reply) => {
       const { slug } = req.params
       const found = await db.query.links.findFirst({
-        where: eq(schema.links.slug, `brev.ly/${slug}`),
+        where: eq(schema.links.slug, slug),
       })
       if (!found) return reply.status(404).send({ message: 'not found' })
 
@@ -166,7 +165,7 @@ export const linksRoute: FastifyPluginAsyncZod = async server => {
         .set({
           accessCount: sql`${schema.links.accessCount} + 1`,
         })
-        .where(eq(schema.links.slug, `brev.ly/${slug}`))
+        .where(eq(schema.links.slug, slug))
         .returning()
 
       if (!updated[0]) {

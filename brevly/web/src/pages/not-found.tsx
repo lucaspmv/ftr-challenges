@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import ErrorImage from '../assets/svgs/404.svg'
 
 export function NotFound() {
@@ -10,9 +11,9 @@ export function NotFound() {
           O link que você está tentando acessar não existe, foi removido ou é
           <br />
           uma URL inválida. Saiba mais em{' '}
-          <a href="/" className="underline text-blue-base">
+          <Link to="/" className="underline text-blue-base">
             brev.ly
-          </a>
+          </Link>
           .
         </p>
       </div>

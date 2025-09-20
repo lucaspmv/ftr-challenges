@@ -1,7 +1,9 @@
 import { TrashIcon } from '@phosphor-icons/react'
 import { CopyIcon } from '@phosphor-icons/react/dist/ssr'
 import type { HTMLAttributes } from 'react'
+import { Link as NavigateLink } from 'react-router-dom'
 import { toast } from 'sonner'
+import { normalizeBaseDomain } from '../helpers/form'
 import type { Link } from '../types/links'
 import { IconButton } from './ui/icon-button'
 
@@ -25,7 +27,7 @@ export function LinkCard({
   const handleCopy = async () => {
     try {
       const appUrl = import.meta.env.VITE_FRONTEND_URL
-      const fullUrl = `${appUrl}/${shortUrl.replace('brev.ly/', '')}`
+      const fullUrl = `${appUrl}/${shortUrl}`
 
       await navigator.clipboard.writeText(fullUrl)
       toast.success('Link copiado!', { duration: 3000 })
@@ -43,11 +45,11 @@ export function LinkCard({
       )}
     >
       <div className="flex flex-col max-w-[140px] md:max-w-[360px]">
-        <a href={shortUrl.replace('brev.ly', '')}>
+        <NavigateLink to={shortUrl}>
           <p className="truncate text-sm md:text-base text-blue-base font-semibold hover:underline">
-            {shortUrl}
+            {`${normalizeBaseDomain(import.meta.env.VITE_FRONTEND_URL)}/${shortUrl}`}
           </p>
-        </a>
+        </NavigateLink>
         <p className="truncate text-xs md:text-sm text-gray-500">
           {originalUrl}
         </p>

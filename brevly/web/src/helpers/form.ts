@@ -1,4 +1,4 @@
-export const slugRegex = /^brev\.ly\/[a-zA-Z0-9._-]{3,60}$/
+export const slugRegex = /^[a-zA-Z0-9._-]{3,60}$/
 
 export function normalizeUrl(value: string): string | null {
   const s = value.trim()
@@ -13,12 +13,22 @@ export function normalizeUrl(value: string): string | null {
 }
 
 export function normalizeSlug(raw: string) {
-  const slug = raw
+  const cleaned = raw
     .trim()
     .replace(/^https?:\/\/[^/]+\/?/, '')
     .replace(/^brev\.ly\//i, '')
     .toLowerCase()
     .slice(0, 60)
 
-  return `brev.ly/${slug}`
+  if (!slugRegex.test(cleaned)) {
+    return null
+  }
+
+  return cleaned
+}
+
+export function normalizeBaseDomain(raw: string) {
+  const baseDomain = raw.replace(/^https?:\/\//i, '').replace(/\/$/, '')
+
+  return baseDomain
 }

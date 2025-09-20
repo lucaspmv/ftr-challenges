@@ -7,9 +7,10 @@ import { LinkCard } from '../components/link-card'
 import { Button } from '../components/ui/button'
 import { Card } from '../components/ui/card'
 import { Input } from '../components/ui/input'
-import { normalizeSlug, normalizeUrl, slugRegex } from '../helpers/form'
+import { normalizeSlug, normalizeUrl } from '../helpers/form'
 import { createLink } from '../http/links/create-link'
 import { deleteLink } from '../http/links/delete-link'
+import { exportLinksCsv } from '../http/links/export-links'
 import { getLinks } from '../http/links/get-links'
 import type { Link } from '../types/links'
 
@@ -19,7 +20,7 @@ export function Home() {
   const [links, setLinks] = useState<LinkState>(new Map<string, Link>())
   const [error, setError] = useState<'both' | 'originalUrl' | 'slug'>()
   const [loading, setLoading] = useState<
-    'create-link' | 'delete-link' | 'get-links' | 'idle'
+    'create-link' | 'delete-link' | 'get-links' | 'export-links' | 'idle'
   >('get-links')
 
   const isEmpty = useMemo(() => links.size === 0, [links.size])
@@ -58,7 +59,6 @@ export function Home() {
         return
       }
 
-      // TODO: validate url
       const originalUrl = normalizeUrl(originalUrlRaw)
       if (!originalUrl) {
         setError('originalUrl')
@@ -66,7 +66,7 @@ export function Home() {
       }
 
       const slug = normalizeSlug(slugRaw)
-      if (!slugRegex.test(slug)) {
+      if (!slug) {
         setError('slug')
         return
       }
@@ -215,7 +215,19 @@ export function Home() {
               <Button
                 leftIcon={<DownloadSimpleIcon />}
                 variant="secondary"
+                loading={loading === 'export-links'}
                 disabled={links.size === 0}
+                onClick={async () => {
+                  try {
+                    setLoading('export-links')
+                    const { reportUrl } = await exportLinksCsv()
+                    window.open(reportUrl, '_blank')
+                  } catch {
+                    toast.error('Não foi possível exportar agora.')
+                  } finally {
+                    setLoading('idle')
+                  }
+                }}
               >
                 Baixar CSV
               </Button>

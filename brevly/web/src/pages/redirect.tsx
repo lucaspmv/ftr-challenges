@@ -17,6 +17,7 @@ export function Redirect() {
     const fetchAndRedirect = async () => {
       try {
         const slug = pathname.slice(1)
+        
         const response = await getLink(slug)
 
         if (response?.data.originalUrl) {

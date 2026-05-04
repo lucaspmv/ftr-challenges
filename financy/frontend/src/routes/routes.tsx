@@ -4,9 +4,9 @@ import ProtectedLayout from './protected-layout';
 import Home from './home';
 import Signup from './signup';
 import Categories from './categories';
+import Transactions from './transactions';
 
 const Dashboard = () => <div className="p-6">Dashboard (TBD)</div>;
-const Transactions = () => <div className="p-6">Transações (TBD)</div>;
 const Profile = () => <div className="p-6">Perfil (TBD)</div>;
 
 export const router = createBrowserRouter([

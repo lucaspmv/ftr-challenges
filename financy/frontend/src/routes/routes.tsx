@@ -3,10 +3,10 @@ import AuthLayout from './auth-layout';
 import ProtectedLayout from './protected-layout';
 import Home from './home';
 import Signup from './signup';
+import Categories from './categories';
 
 const Dashboard = () => <div className="p-6">Dashboard (TBD)</div>;
 const Transactions = () => <div className="p-6">Transações (TBD)</div>;
-const Categories = () => <div className="p-6">Categorias (TBD)</div>;
 const Profile = () => <div className="p-6">Perfil (TBD)</div>;
 
 export const router = createBrowserRouter([

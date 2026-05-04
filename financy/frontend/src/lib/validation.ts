@@ -23,3 +23,12 @@ export const categorySchema = z.object({
   color: z.enum(CATEGORY_COLORS),
 });
 export type CategoryForm = z.infer<typeof categorySchema>;
+
+export const transactionSchema = z.object({
+  description: z.string().min(1, 'Descrição obrigatória'),
+  amount: z.number().positive('Valor deve ser maior que zero'),
+  type: z.enum(['INCOME','EXPENSE']),
+  date: z.string().min(1, 'Selecione uma data'),
+  categoryId: z.string().min(1, 'Selecione uma categoria'),
+});
+export type TransactionForm = z.infer<typeof transactionSchema>;

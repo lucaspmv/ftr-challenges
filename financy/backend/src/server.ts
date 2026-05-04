@@ -9,6 +9,7 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { loadFilesSync } from '@graphql-tools/load-files';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import path from 'node:path';
+import { buildContext } from './context';
 
 const typeDefs = loadFilesSync(path.join(__dirname, 'schema.graphql'));
 
@@ -39,7 +40,7 @@ async function main() {
     cookieParser(),
     express.json(),
     expressMiddleware(apollo, {
-      context: async ({ req, res }) => ({ req, res }),
+      context: async ({ req, res }) => buildContext({ req, res }),
     }),
   );
 

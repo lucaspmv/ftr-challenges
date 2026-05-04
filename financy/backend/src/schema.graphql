@@ -32,3 +32,31 @@ type Mutation {
   signIn(input: SignInInput!): AuthPayload!
   signOut: Boolean!
 }
+
+type Category {
+  id: ID!
+  title: String!
+  description: String
+  icon: String!
+  color: String!
+  transactionsCount: Int!
+  totalAmount: Float!
+  createdAt: DateTime!
+}
+
+input CategoryInput {
+  title: String!
+  description: String
+  icon: String!
+  color: String!
+}
+
+extend type Query {
+  categories: [Category!]!
+}
+
+extend type Mutation {
+  createCategory(input: CategoryInput!): Category!
+  updateCategory(id: ID!, input: CategoryInput!): Category!
+  deleteCategory(id: ID!): Boolean!
+}

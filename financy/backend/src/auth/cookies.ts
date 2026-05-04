@@ -1,6 +1,6 @@
 import type { Response } from 'express';
 
-const COOKIE_NAME = 'financy:token';
+const COOKIE_NAME = 'financy_token';
 const SEVEN_DAYS = 7 * 24 * 60 * 60 * 1000;
 
 export const setAuthCookie = (

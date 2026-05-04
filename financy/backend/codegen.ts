@@ -13,6 +13,8 @@ const config: CodegenConfig = {
         contextType: '../context#GraphQLContext',
         useIndexSignature: true,
         scalars: { DateTime: 'Date' },
+        avoidOptionals: { object: true, defaultValue: true },
+        inputMaybeValue: 'T | undefined',
       },
     },
   },

@@ -10,14 +10,9 @@ import { loadFilesSync } from '@graphql-tools/load-files';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import path from 'node:path';
 import { buildContext } from './context';
+import { resolvers } from './resolvers';
 
 const typeDefs = loadFilesSync(path.join(__dirname, 'schema.graphql'));
-
-const resolvers = {
-  Query: {
-    hello: () => 'Financy backend up',
-  },
-};
 
 async function main() {
   const app = express();

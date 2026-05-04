@@ -1,1 +1,55 @@
-body { margin: 0; font-family: system-ui, sans-serif; }
+@import 'tailwindcss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+
+  --color-brand-dark: #114a2b;
+  --color-brand-base: #1f6f43;
+
+  --color-danger: #ef4444;
+  --color-success: #19ad6f;
+
+  --color-cat-blue-light: #dbeafe;
+  --color-cat-blue-base: #2563eb;
+  --color-cat-blue-dark: #1d4ed8;
+
+  --color-cat-purple-light: #f3e8ff;
+  --color-cat-purple-base: #9333ea;
+  --color-cat-purple-dark: #7e22ce;
+
+  --color-cat-pink-light: #fce7f3;
+  --color-cat-pink-base: #db2777;
+  --color-cat-pink-dark: #be185d;
+
+  --color-cat-red-light: #fee2e2;
+  --color-cat-red-base: #dc2626;
+  --color-cat-red-dark: #b91c1c;
+
+  --color-cat-orange-light: #ffedd5;
+  --color-cat-orange-base: #ea580c;
+  --color-cat-orange-dark: #c2410c;
+
+  --color-cat-yellow-light: #f7f3ca;
+  --color-cat-yellow-base: #ca8a04;
+  --color-cat-yellow-dark: #a16207;
+
+  --color-cat-green-light: #e0fae9;
+  --color-cat-green-base: #16a34a;
+  --color-cat-green-dark: #15803d;
+
+  --color-gray-100: #f8f9fa;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #111827;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--color-gray-100);
+  color: var(--color-gray-800);
+}

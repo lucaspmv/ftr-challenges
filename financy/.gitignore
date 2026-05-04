@@ -10,7 +10,7 @@ dist/
 build/
 
 # generated
-src/generated/
+**/src/generated/
 
 # db
 *.db

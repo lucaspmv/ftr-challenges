@@ -60,3 +60,51 @@ extend type Mutation {
   updateCategory(id: ID!, input: CategoryInput!): Category!
   deleteCategory(id: ID!): Boolean!
 }
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+type Transaction {
+  id: ID!
+  description: String!
+  amount: Float!
+  type: TransactionType!
+  date: DateTime!
+  category: Category!
+  createdAt: DateTime!
+}
+
+input TransactionInput {
+  description: String!
+  amount: Float!
+  type: TransactionType!
+  date: DateTime!
+  categoryId: ID!
+}
+
+type DashboardStats {
+  totalBalance: Float!
+  monthIncome: Float!
+  monthExpense: Float!
+  recentTransactions: [Transaction!]!
+  categoriesSummary: [CategorySummary!]!
+}
+
+type CategorySummary {
+  category: Category!
+  count: Int!
+  totalAmount: Float!
+}
+
+extend type Query {
+  transactions(month: Int, year: Int): [Transaction!]!
+  dashboard: DashboardStats!
+}
+
+extend type Mutation {
+  createTransaction(input: TransactionInput!): Transaction!
+  updateTransaction(id: ID!, input: TransactionInput!): Transaction!
+  deleteTransaction(id: ID!): Boolean!
+}

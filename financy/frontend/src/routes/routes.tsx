@@ -6,8 +6,7 @@ import Signup from './signup';
 import Categories from './categories';
 import Transactions from './transactions';
 import Dashboard from './dashboard';
-
-const Profile = () => <div className="p-6">Perfil (TBD)</div>;
+import Profile from './profile';
 
 export const router = createBrowserRouter([
   {

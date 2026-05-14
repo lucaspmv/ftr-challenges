@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import { transactionSchema, type TransactionForm } from '@/lib/validation';
+import { formatBRL } from '@/lib/format';
 import { CATEGORIES } from '@/graphql/categories';
 import { CREATE_TRANSACTION, UPDATE_TRANSACTION } from '@/graphql/transactions';
 
@@ -122,7 +123,24 @@ export function TransactionDialog({
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="amount">Valor</Label>
-              <Input id="amount" type="number" step="0.01" placeholder="0,00" {...register('amount', { valueAsNumber: true })} />
+              <Controller
+                control={control}
+                name="amount"
+                render={({ field }) => (
+                  <Input
+                    id="amount"
+                    type="text"
+                    inputMode="numeric"
+                    placeholder="R$ 0,00"
+                    value={field.value > 0 ? formatBRL(field.value) : ''}
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, '');
+                      field.onChange(digits ? Number(digits) / 100 : 0);
+                    }}
+                    onBlur={field.onBlur}
+                  />
+                )}
+              />
               {errors.amount && <p className="text-xs text-danger">{errors.amount.message}</p>}
             </div>
           </div>

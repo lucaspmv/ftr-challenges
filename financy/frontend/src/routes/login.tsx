@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client/react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -21,8 +21,11 @@ export default function Login() {
     awaitRefetchQueries: true,
   });
   const {
-    register, handleSubmit, formState: { errors },
-  } = useForm<SignInForm>({ resolver: zodResolver(signInSchema) });
+    register, handleSubmit, control, formState: { errors },
+  } = useForm<SignInForm>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: '', password: '', rememberMe: false },
+  });
 
   const onSubmit = async (values: SignInForm) => {
     try {
@@ -65,7 +68,16 @@ export default function Login() {
           </div>
           <div className="flex items-center justify-between text-sm">
             <label className="flex items-center gap-2 text-gray-600">
-              <Checkbox {...register('rememberMe')} />
+              <Controller
+                control={control}
+                name="rememberMe"
+                render={({ field }) => (
+                  <Checkbox
+                    checked={field.value ?? false}
+                    onCheckedChange={(v) => field.onChange(v === true)}
+                  />
+                )}
+              />
               Lembrar-me
             </label>
             <span className="text-gray-400">Recuperar senha</span>

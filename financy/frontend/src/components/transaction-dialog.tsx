@@ -136,10 +136,16 @@ export function TransactionDialog({
                   <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent position="popper">
-                    {catData?.categories?.map((c) => (
-                      <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
-                    ))}
+                  <SelectContent position="popper" className="z-[60]">
+                    {(catData?.categories ?? []).length === 0 ? (
+                      <SelectItem value="__none" disabled>
+                        Nenhuma categoria — crie em "Categorias"
+                      </SelectItem>
+                    ) : (
+                      catData!.categories!.map((c) => (
+                        <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
+                      ))
+                    )}
                   </SelectContent>
                 </Select>
               )}

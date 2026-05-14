@@ -133,6 +133,20 @@
   * {
     @apply border-border outline-ring/50;
   }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [role="checkbox"],
+  [role="combobox"],
+  [role="menuitem"],
+  [role="option"],
+  [role="switch"],
+  [role="tab"],
+  a[href],
+  label[for],
+  summary,
+  select {
+    cursor: pointer;
+  }
 }
 
 body {

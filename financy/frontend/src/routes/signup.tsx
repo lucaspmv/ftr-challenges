@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, UserRound, UserRoundPlus, LogIn, ChevronRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, UserRound, LogIn } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -34,9 +34,11 @@ export default function Signup() {
 
   return (
     <div className="w-full max-w-md space-y-6">
-      <Logo />
+      <div className="flex justify-center">
+        <Logo />
+      </div>
       <div className="rounded-2xl bg-white p-8 shadow-sm">
-        <header className="mb-6">
+        <header className="mb-6 text-center">
           <h1 className="text-xl font-bold text-gray-800">Criar conta</h1>
           <p className="text-sm text-gray-500">Comece a controlar suas finanças ainda hoje</p>
         </header>
@@ -70,18 +72,18 @@ export default function Signup() {
             {errors.password && <p className="text-xs text-danger">{errors.password.message}</p>}
           </div>
           <Button type="submit" disabled={loading} className="w-full bg-brand-base hover:bg-brand-dark">
-            <UserRoundPlus className="size-4" /> Cadastrar
+            Cadastrar
           </Button>
         </form>
         <div className="my-6 flex items-center gap-3 text-xs text-gray-400">
           <div className="h-px flex-1 bg-gray-200" /> ou <div className="h-px flex-1 bg-gray-200" />
         </div>
-        <p className="text-center text-sm text-gray-600">
-          Já tem uma conta?{' '}
-          <Link to="/" className="inline-flex items-center gap-1 font-medium text-brand-base">
-            <LogIn className="size-4" /> Fazer login <ChevronRight className="size-3" />
+        <p className="text-center text-sm text-gray-600 mb-3">Já tem uma conta?</p>
+        <Button variant="outline" asChild className="w-full">
+          <Link to="/">
+            <LogIn className="size-4" /> Fazer login
           </Link>
-        </p>
+        </Button>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@apollo/client/react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Mail, Lock, LogIn, UserRoundPlus, ChevronRight } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, UserRoundPlus } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -35,9 +35,11 @@ export default function Login() {
 
   return (
     <div className="w-full max-w-md space-y-6">
-      <Logo />
+      <div className="flex justify-center">
+        <Logo />
+      </div>
       <div className="rounded-2xl bg-white p-8 shadow-sm">
-        <header className="mb-6">
+        <header className="mb-6 text-center">
           <h1 className="text-xl font-bold text-gray-800">Fazer login</h1>
           <p className="text-sm text-gray-500">Entre na sua conta para continuar</p>
         </header>
@@ -69,18 +71,18 @@ export default function Login() {
             <span className="text-gray-400">Recuperar senha</span>
           </div>
           <Button type="submit" disabled={loading} className="w-full bg-brand-base hover:bg-brand-dark">
-            <LogIn className="size-4" /> Entrar
+            Entrar
           </Button>
         </form>
         <div className="my-6 flex items-center gap-3 text-xs text-gray-400">
           <div className="h-px flex-1 bg-gray-200" /> ou <div className="h-px flex-1 bg-gray-200" />
         </div>
-        <p className="text-center text-sm text-gray-600">
-          Ainda não tem uma conta?{' '}
-          <Link to="/cadastro" className="inline-flex items-center gap-1 font-medium text-brand-base">
-            <UserRoundPlus className="size-4" /> Criar conta <ChevronRight className="size-3" />
+        <p className="text-center text-sm text-gray-600 mb-3">Ainda não tem uma conta?</p>
+        <Button variant="outline" asChild className="w-full">
+          <Link to="/cadastro">
+            <UserRoundPlus className="size-4" /> Criar conta
           </Link>
-        </p>
+        </Button>
       </div>
     </div>
   );

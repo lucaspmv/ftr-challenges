@@ -133,10 +133,10 @@ export function TransactionDialog({
               name="categoryId"
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger>
+                  <SelectTrigger className="w-full">
                     <SelectValue placeholder="Selecione" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="popper">
                     {catData?.categories?.map((c) => (
                       <SelectItem key={c.id} value={c.id}>{c.title}</SelectItem>
                     ))}

@@ -71,7 +71,7 @@ export function TransactionDialog({
 
   const onSubmit = async (values: TransactionForm) => {
     try {
-      const input = { ...values, date: new Date(values.date).toISOString() };
+      const input = { ...values, date: new Date(`${values.date}T12:00:00`).toISOString() };
       if (isEdit) {
         await updateTx({ variables: { id: transaction!.id, input } });
       } else {

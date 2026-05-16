@@ -156,34 +156,34 @@ export default function Transactions() {
           />
         ) : (
           <>
-            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] gap-4 border-b border-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            <div className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_8rem] gap-4 border-b border-gray-100 px-5 py-3 text-xs font-semibold uppercase tracking-wide text-gray-500">
               <span>Descrição</span>
               <span>Data</span>
-              <span>Categoria</span>
-              <span>Tipo</span>
+              <span className="text-center">Categoria</span>
+              <span className="text-center">Tipo</span>
               <span className="text-right">Valor</span>
               <span className="text-right">Ações</span>
             </div>
             {paged.map((t) => (
-              <div key={t.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_auto] items-center gap-4 border-b border-gray-100 px-5 py-3 last:border-b-0">
+              <div key={t.id} className="grid grid-cols-[2fr_1fr_1fr_1fr_1fr_8rem] items-center gap-4 border-b border-gray-100 px-5 py-3 last:border-b-0">
                 <div className="flex items-center gap-3 min-w-0">
                   <CategoryIconBadge icon={t.category.icon as CategoryIconKey} color={t.category.color as CategoryColor} />
                   <span className="truncate font-medium text-gray-800">{t.description}</span>
                 </div>
                 <span className="text-sm text-gray-600">{formatDateShort(t.date)}</span>
-                <span><CategoryTag color={t.category.color as CategoryColor} label={t.category.title} /></span>
-                <span className={cn('inline-flex items-center gap-1 text-sm font-medium', t.type === 'INCOME' ? 'text-success' : 'text-danger')}>
+                <span className="justify-self-center"><CategoryTag color={t.category.color as CategoryColor} label={t.category.title} /></span>
+                <span className={cn('inline-flex items-center gap-1 text-sm font-medium justify-self-center', t.type === 'INCOME' ? 'text-success' : 'text-danger')}>
                   {t.type === 'INCOME' ? <ArrowUpCircle className="size-4" /> : <ArrowDownCircle className="size-4" />}
                   {t.type === 'INCOME' ? 'Entrada' : 'Saída'}
                 </span>
                 <span className={cn('text-right text-sm font-semibold whitespace-nowrap', t.type === 'INCOME' ? 'text-success' : 'text-danger')}>
                   {formatSignedBRL(t.amount, t.type)}
                 </span>
-                <div className="flex justify-end gap-1">
-                  <Button variant="ghost" size="icon" className="text-danger" onClick={() => setConfirmDeleteId(t.id)} aria-label="Excluir">
+                <div className="flex justify-end gap-2">
+                  <Button variant="outline" size="icon" className="border-danger/30 text-danger hover:bg-danger/5 hover:text-danger" onClick={() => setConfirmDeleteId(t.id)} aria-label="Excluir">
                     <Trash2 className="size-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" onClick={() => { setEditing(t); setOpen(true); }} aria-label="Editar">
+                  <Button variant="outline" size="icon" onClick={() => { setEditing(t); setOpen(true); }} aria-label="Editar">
                     <Pencil className="size-4" />
                   </Button>
                 </div>

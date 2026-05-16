@@ -25,3 +25,9 @@ export const ME = gql(/* GraphQL */ `
     me { id name email createdAt }
   }
 `);
+
+export const UPDATE_USER = gql(/* GraphQL */ `
+  mutation UpdateUser($input: UpdateUserInput!) {
+    updateUser(input: $input) { id name email createdAt }
+  }
+`);

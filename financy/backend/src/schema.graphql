@@ -27,10 +27,15 @@ type Query {
   me: User!
 }
 
+input UpdateUserInput {
+  name: String!
+}
+
 type Mutation {
   signUp(input: SignUpInput!): AuthPayload!
   signIn(input: SignInInput!): AuthPayload!
   signOut: Boolean!
+  updateUser(input: UpdateUserInput!): User!
 }
 
 type Category {

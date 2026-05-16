@@ -52,3 +52,17 @@ export const signIn = async (prisma: PrismaClient, raw: SignInInput) => {
 
 export const findUserById = (prisma: PrismaClient, id: string) =>
   prisma.user.findUnique({ where: { id } });
+
+export const updateUser = async (
+  prisma: PrismaClient,
+  userId: string,
+  input: { name: string },
+) => {
+  const name = input.name?.trim() ?? '';
+  if (name.length < 1) throwError('BAD_USER_INPUT', 'Nome obrigatório');
+  const user = await prisma.user.update({
+    where: { id: userId },
+    data: { name },
+  });
+  return publicUser(user);
+};

@@ -1,7 +1,7 @@
 import type { Resolvers } from '../../generated/graphql';
 import { requireAuth } from '../../auth/requireAuth';
 import { setAuthCookie, clearAuthCookie } from '../../auth/cookies';
-import { signUp, signIn, findUserById } from './user.service';
+import { signUp, signIn, findUserById, updateUser } from './user.service';
 import { throwError } from '../../errors';
 
 export const userResolvers: Resolvers = {
@@ -32,6 +32,10 @@ export const userResolvers: Resolvers = {
     signOut: async (_, __, ctx) => {
       clearAuthCookie(ctx.res);
       return true;
+    },
+    updateUser: async (_, { input }, ctx) => {
+      const userId = requireAuth(ctx);
+      return updateUser(ctx.prisma, userId, input);
     },
   },
 };

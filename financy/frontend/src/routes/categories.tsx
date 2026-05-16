@@ -16,7 +16,14 @@ export default function Categories() {
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [deleteCategory] = useMutation(DELETE_CATEGORY);
+  const [deleteCategory] = useMutation(DELETE_CATEGORY, {
+    update: (cache) => {
+      cache.evict({ fieldName: 'dashboard' });
+      cache.evict({ fieldName: 'transactions' });
+      cache.evict({ fieldName: 'categories' });
+      cache.gc();
+    },
+  });
 
   const categories = data?.categories ?? [];
   const totalCategories = categories.length;
@@ -27,7 +34,7 @@ export default function Categories() {
     if (!confirmDeleteId) return;
     try {
       await deleteCategory({ variables: { id: confirmDeleteId } });
-      await client.refetchQueries({ include: ['Categories', 'Dashboard', 'Transactions'] });
+      await client.refetchQueries({ include: 'active' });
       toast.success('Categoria removida');
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao remover');

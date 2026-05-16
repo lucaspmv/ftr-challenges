@@ -27,8 +27,14 @@ export function CategoryDialog({
 }) {
   const isEdit = !!category;
   const client = useApolloClient();
-  const [createCategory] = useMutation(CREATE_CATEGORY);
-  const [updateCategory] = useMutation(UPDATE_CATEGORY);
+  const evictCatRelated = (cache: any) => {
+    cache.evict({ fieldName: 'dashboard' });
+    cache.evict({ fieldName: 'transactions' });
+    cache.evict({ fieldName: 'categories' });
+    cache.gc();
+  };
+  const [createCategory] = useMutation(CREATE_CATEGORY, { update: evictCatRelated });
+  const [updateCategory] = useMutation(UPDATE_CATEGORY, { update: evictCatRelated });
 
   const { register, handleSubmit, control, reset, formState: { errors, isSubmitting } } = useForm<CategoryForm>({
     resolver: zodResolver(categorySchema),
@@ -61,7 +67,7 @@ export function CategoryDialog({
       } else {
         await createCategory({ variables: { input } });
       }
-      await client.refetchQueries({ include: ['Categories', 'Dashboard', 'Transactions'] });
+      await client.refetchQueries({ include: 'active' });
       toast.success(isEdit ? 'Categoria atualizada' : 'Categoria criada');
       onOpenChange(false);
     } catch (e: any) {

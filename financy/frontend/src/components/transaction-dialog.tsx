@@ -31,8 +31,14 @@ export function TransactionDialog({
   const isEdit = !!transaction;
   const client = useApolloClient();
   const { data: catData } = useQuery(CATEGORIES, { skip: !open });
-  const [createTx] = useMutation(CREATE_TRANSACTION);
-  const [updateTx] = useMutation(UPDATE_TRANSACTION);
+  const evictTxRelated = (cache: any) => {
+    cache.evict({ fieldName: 'dashboard' });
+    cache.evict({ fieldName: 'transactions' });
+    cache.evict({ fieldName: 'categories' });
+    cache.gc();
+  };
+  const [createTx] = useMutation(CREATE_TRANSACTION, { update: evictTxRelated });
+  const [updateTx] = useMutation(UPDATE_TRANSACTION, { update: evictTxRelated });
 
   const { register, handleSubmit, control, reset, watch, formState: { errors, isSubmitting } } = useForm<TransactionForm>({
     resolver: zodResolver(transactionSchema),
@@ -71,7 +77,7 @@ export function TransactionDialog({
       } else {
         await createTx({ variables: { input } });
       }
-      await client.refetchQueries({ include: ['Transactions', 'Dashboard', 'Categories'] });
+      await client.refetchQueries({ include: 'active' });
       toast.success(isEdit ? 'Transação atualizada' : 'Transação criada');
       onOpenChange(false);
     } catch (e: any) {

@@ -56,7 +56,14 @@ export default function Transactions() {
   });
   const { data: catData } = useQuery(CATEGORIES);
   const client = useApolloClient();
-  const [deleteTx] = useMutation(DELETE_TRANSACTION);
+  const [deleteTx] = useMutation(DELETE_TRANSACTION, {
+    update: (cache) => {
+      cache.evict({ fieldName: 'dashboard' });
+      cache.evict({ fieldName: 'transactions' });
+      cache.evict({ fieldName: 'categories' });
+      cache.gc();
+    },
+  });
 
   const transactions = data?.transactions ?? [];
   const filtered = useMemo(() => {
@@ -84,7 +91,7 @@ export default function Transactions() {
     if (!confirmDeleteId) return;
     try {
       await deleteTx({ variables: { id: confirmDeleteId } });
-      await client.refetchQueries({ include: ['Transactions', 'Dashboard', 'Categories'] });
+      await client.refetchQueries({ include: 'active' });
       toast.success('Transação removida');
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao remover');

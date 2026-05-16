@@ -72,6 +72,9 @@ export default function Transactions() {
   const paged = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const rangeStart = filtered.length === 0 ? 0 : (page - 1) * PAGE_SIZE + 1;
   const rangeEnd = Math.min(page * PAGE_SIZE, filtered.length);
+  const windowStart = Math.max(1, Math.min(totalPages - 4, page - 2));
+  const windowEnd = Math.min(totalPages, windowStart + 4);
+  const visiblePages = Array.from({ length: windowEnd - windowStart + 1 }, (_, i) => windowStart + i);
 
   useEffect(() => {
     setPage(1);
@@ -197,11 +200,11 @@ export default function Transactions() {
                 <Button variant="ghost" size="icon" disabled={page === 1} onClick={() => setPage((p) => Math.max(1, p - 1))} aria-label="Anterior">
                   <ChevronLeft className="size-4" />
                 </Button>
-                {Array.from({ length: totalPages }, (_, i) => i + 1).slice(0, 5).map((n) => (
+                {visiblePages.map((n) => (
                   <Button
                     key={n}
                     size="icon"
-                    variant={n === page ? 'default' : 'ghost'}
+                    variant={n === page ? 'default' : 'outline'}
                     className={n === page ? 'bg-brand-base hover:bg-brand-dark' : ''}
                     onClick={() => setPage(n)}
                   >

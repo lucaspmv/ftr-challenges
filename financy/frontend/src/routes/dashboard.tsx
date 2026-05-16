@@ -26,46 +26,50 @@ export default function Dashboard() {
         <StatCard icon={ArrowDownCircle} label="Despesas do mês" accent="danger" value={stats ? formatBRL(stats.monthExpense) : '—'} />
       </div>
 
-      <section className="rounded-2xl bg-white shadow-sm">
-        <header className="flex items-center justify-between p-5 pb-3">
-          <h2 className="text-sm font-semibold text-gray-700">Transações recentes</h2>
-          <Link to="/transacoes" className="inline-flex items-center gap-1 text-sm text-brand-base">
-            Ver todas <ChevronRight className="size-3" />
-          </Link>
-        </header>
-        {loading ? null : (stats?.recentTransactions.length ?? 0) === 0 ? (
-          <EmptyState title="Nenhuma transação ainda" action={<Button onClick={() => setOpen(true)} className="bg-brand-base hover:bg-brand-dark"><Plus className="size-4" /> Nova transação</Button>} />
-        ) : (
-          <>
-            {stats!.recentTransactions.map((t) => <TransactionRow key={t.id} transaction={t} />)}
-            <div className="border-t border-gray-100 px-5 py-3">
-              <Button variant="ghost" onClick={() => setOpen(true)} className="text-brand-base">
-                <Plus className="size-4" /> Nova transação <ChevronRight className="size-3" />
-              </Button>
-            </div>
-          </>
-        )}
-      </section>
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <section className="rounded-2xl bg-white shadow-sm lg:col-span-2">
+          <header className="flex items-center justify-between p-5 pb-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Transações recentes</h2>
+            <Link to="/transacoes" className="inline-flex items-center gap-1 text-sm font-medium text-brand-base">
+              Ver todas <ChevronRight className="size-3" />
+            </Link>
+          </header>
+          {loading ? null : (stats?.recentTransactions.length ?? 0) === 0 ? (
+            <EmptyState title="Nenhuma transação ainda" action={<Button onClick={() => setOpen(true)} className="bg-brand-base hover:bg-brand-dark"><Plus className="size-4" /> Nova transação</Button>} />
+          ) : (
+            <>
+              {stats!.recentTransactions.map((t) => <TransactionRow key={t.id} transaction={t} />)}
+              <div className="border-t border-gray-100 px-5 py-3">
+                <Button variant="ghost" onClick={() => setOpen(true)} className="text-brand-base">
+                  <Plus className="size-4" /> Nova transação <ChevronRight className="size-3" />
+                </Button>
+              </div>
+            </>
+          )}
+        </section>
 
-      <section className="rounded-2xl bg-white shadow-sm">
-        <header className="flex items-center justify-between border-b border-gray-100 p-5">
-          <h2 className="text-sm font-semibold text-gray-700">Categorias</h2>
-          <Link to="/categorias" className="inline-flex items-center gap-1 text-sm text-brand-base">
-            Gerenciar <ChevronRight className="size-3" />
-          </Link>
-        </header>
-        {loading ? null : (stats?.categoriesSummary.length ?? 0) === 0 ? (
-          <EmptyState title="Nenhuma categoria ainda" />
-        ) : (
-          stats!.categoriesSummary.map((s) => (
-            <div key={s.category.id} className="flex items-center justify-between border-b border-gray-100 px-5 py-3 last:border-b-0">
-              <CategoryTag color={s.category.color as CategoryColor} label={s.category.title} />
-              <span className="text-sm text-gray-500">{s.count} {s.count === 1 ? 'item' : 'itens'}</span>
-              <span className="text-sm font-semibold text-gray-700">{formatBRL(s.totalAmount)}</span>
-            </div>
-          ))
-        )}
-      </section>
+        <section className="rounded-2xl bg-white shadow-sm">
+          <header className="flex items-center justify-between border-b border-gray-100 p-5">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-gray-500">Categorias</h2>
+            <Link to="/categorias" className="inline-flex items-center gap-1 text-sm font-medium text-brand-base">
+              Gerenciar <ChevronRight className="size-3" />
+            </Link>
+          </header>
+          {loading ? null : (stats?.categoriesSummary.length ?? 0) === 0 ? (
+            <EmptyState title="Nenhuma categoria ainda" />
+          ) : (
+            <ul>
+              {stats!.categoriesSummary.map((s) => (
+                <li key={s.category.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b border-gray-100 px-5 py-3 last:border-b-0">
+                  <CategoryTag color={s.category.color as CategoryColor} label={s.category.title} />
+                  <span className="text-sm text-gray-500 whitespace-nowrap">{s.count} {s.count === 1 ? 'item' : 'itens'}</span>
+                  <span className="text-sm font-semibold text-gray-700 whitespace-nowrap">{formatBRL(s.totalAmount)}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
 
       <TransactionDialog open={open} onOpenChange={setOpen} />
     </div>

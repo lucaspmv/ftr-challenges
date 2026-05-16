@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQuery } from '@apollo/client/react';
-import { ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
+import { ArrowDownCircle, ArrowUpCircle, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -94,15 +94,23 @@ export function TransactionDialog({
           control={control}
           name="type"
           render={({ field }) => (
-            <div className="grid grid-cols-2 gap-2 rounded-md bg-gray-100 p-1">
+            <div className="grid grid-cols-2 gap-3">
               <button type="button" onClick={() => field.onChange('EXPENSE')}
-                className={cn('flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition',
-                  type === 'EXPENSE' ? 'bg-white text-danger shadow-sm' : 'text-gray-500')}>
+                className={cn(
+                  'flex h-12 items-center justify-center gap-2 rounded-md border bg-white text-sm font-medium transition',
+                  type === 'EXPENSE'
+                    ? 'border-danger text-danger'
+                    : 'border-gray-200 text-gray-400 hover:border-gray-300',
+                )}>
                 <ArrowDownCircle className="size-4" /> Despesa
               </button>
               <button type="button" onClick={() => field.onChange('INCOME')}
-                className={cn('flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition',
-                  type === 'INCOME' ? 'bg-white text-success shadow-sm' : 'text-gray-500')}>
+                className={cn(
+                  'flex h-12 items-center justify-center gap-2 rounded-md border bg-white text-sm font-medium transition',
+                  type === 'INCOME'
+                    ? 'border-success text-success'
+                    : 'border-gray-200 text-gray-400 hover:border-gray-300',
+                )}>
                 <ArrowUpCircle className="size-4" /> Receita
               </button>
             </div>
@@ -127,18 +135,22 @@ export function TransactionDialog({
                 control={control}
                 name="amount"
                 render={({ field }) => (
-                  <Input
-                    id="amount"
-                    type="text"
-                    inputMode="numeric"
-                    placeholder="R$ 0,00"
-                    value={field.value > 0 ? formatBRL(field.value) : ''}
-                    onChange={(e) => {
-                      const digits = e.target.value.replace(/\D/g, '');
-                      field.onChange(digits ? Number(digits) / 100 : 0);
-                    }}
-                    onBlur={field.onBlur}
-                  />
+                  <div className="relative">
+                    <Wallet className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                    <Input
+                      id="amount"
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="R$ 0,00"
+                      className="pl-9"
+                      value={field.value > 0 ? formatBRL(field.value) : ''}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/\D/g, '');
+                        field.onChange(digits ? Number(digits) / 100 : 0);
+                      }}
+                      onBlur={field.onBlur}
+                    />
+                  </div>
                 )}
               />
               {errors.amount && <p className="text-xs text-danger">{errors.amount.message}</p>}

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation } from '@apollo/client/react';
+import { useMutation, useApolloClient } from '@apollo/client/react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -26,8 +26,9 @@ export function CategoryDialog({
   category?: CategoryRow | null;
 }) {
   const isEdit = !!category;
-  const [createCategory] = useMutation(CREATE_CATEGORY, { refetchQueries: ['Categories', 'Dashboard'] });
-  const [updateCategory] = useMutation(UPDATE_CATEGORY, { refetchQueries: ['Categories', 'Dashboard'] });
+  const client = useApolloClient();
+  const [createCategory] = useMutation(CREATE_CATEGORY);
+  const [updateCategory] = useMutation(UPDATE_CATEGORY);
 
   const { register, handleSubmit, control, reset, formState: { errors, isSubmitting } } = useForm<CategoryForm>({
     resolver: zodResolver(categorySchema),
@@ -57,11 +58,11 @@ export function CategoryDialog({
       };
       if (isEdit) {
         await updateCategory({ variables: { id: category!.id, input } });
-        toast.success('Categoria atualizada');
       } else {
         await createCategory({ variables: { input } });
-        toast.success('Categoria criada');
       }
+      await client.refetchQueries({ include: ['Categories', 'Dashboard', 'Transactions'] });
+      toast.success(isEdit ? 'Categoria atualizada' : 'Categoria criada');
       onOpenChange(false);
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao salvar');

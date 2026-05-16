@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client/react';
 import {
   Plus, Search, ArrowDownCircle, ArrowUpCircle, Pencil, Trash2,
   ChevronLeft, ChevronRight,
@@ -55,9 +55,8 @@ export default function Transactions() {
     variables: { month: sel.month, year: sel.year },
   });
   const { data: catData } = useQuery(CATEGORIES);
-  const [deleteTx] = useMutation(DELETE_TRANSACTION, {
-    refetchQueries: ['Transactions', 'Dashboard', 'Categories'],
-  });
+  const client = useApolloClient();
+  const [deleteTx] = useMutation(DELETE_TRANSACTION);
 
   const transactions = data?.transactions ?? [];
   const filtered = useMemo(() => {
@@ -82,6 +81,7 @@ export default function Transactions() {
     if (!confirmDeleteId) return;
     try {
       await deleteTx({ variables: { id: confirmDeleteId } });
+      await client.refetchQueries({ include: ['Transactions', 'Dashboard', 'Categories'] });
       toast.success('Transação removida');
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao remover');

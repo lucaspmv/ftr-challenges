@@ -35,9 +35,7 @@ export default function Profile() {
       navigate('/');
     },
   });
-  const [updateUser, { loading: saving }] = useMutation(UPDATE_USER, {
-    refetchQueries: ['Me'],
-  });
+  const [updateUser, { loading: saving }] = useMutation(UPDATE_USER);
 
   const { register, handleSubmit, reset, formState: { errors, isDirty } } =
     useForm<ProfileForm>({
@@ -54,6 +52,7 @@ export default function Profile() {
   const onSubmit = async (values: ProfileForm) => {
     try {
       await updateUser({ variables: { input: values } });
+      await client.refetchQueries({ include: ['Me'] });
       toast.success('Perfil atualizado');
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao salvar');

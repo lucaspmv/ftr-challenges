@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client/react';
 import { Plus, Tag, ArrowUpDown, Utensils } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -12,12 +12,11 @@ import { CATEGORIES, DELETE_CATEGORY } from '@/graphql/categories';
 
 export default function Categories() {
   const { data, loading } = useQuery(CATEGORIES);
+  const client = useApolloClient();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<any | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
-  const [deleteCategory] = useMutation(DELETE_CATEGORY, {
-    refetchQueries: ['Categories', 'Dashboard'],
-  });
+  const [deleteCategory] = useMutation(DELETE_CATEGORY);
 
   const categories = data?.categories ?? [];
   const totalCategories = categories.length;
@@ -28,6 +27,7 @@ export default function Categories() {
     if (!confirmDeleteId) return;
     try {
       await deleteCategory({ variables: { id: confirmDeleteId } });
+      await client.refetchQueries({ include: ['Categories', 'Dashboard', 'Transactions'] });
       toast.success('Categoria removida');
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao remover');

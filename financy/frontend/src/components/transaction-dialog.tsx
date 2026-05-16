@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery } from '@apollo/client/react';
+import { useMutation, useQuery, useApolloClient } from '@apollo/client/react';
 import { ArrowDownCircle, ArrowUpCircle, Wallet } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -29,13 +29,10 @@ export function TransactionDialog({
   transaction?: TransactionRow | null;
 }) {
   const isEdit = !!transaction;
+  const client = useApolloClient();
   const { data: catData } = useQuery(CATEGORIES, { skip: !open });
-  const [createTx] = useMutation(CREATE_TRANSACTION, {
-    refetchQueries: ['Transactions', 'Dashboard', 'Categories'],
-  });
-  const [updateTx] = useMutation(UPDATE_TRANSACTION, {
-    refetchQueries: ['Transactions', 'Dashboard', 'Categories'],
-  });
+  const [createTx] = useMutation(CREATE_TRANSACTION);
+  const [updateTx] = useMutation(UPDATE_TRANSACTION);
 
   const { register, handleSubmit, control, reset, watch, formState: { errors, isSubmitting } } = useForm<TransactionForm>({
     resolver: zodResolver(transactionSchema),
@@ -71,11 +68,11 @@ export function TransactionDialog({
       const input = { ...values, date: new Date(values.date).toISOString() };
       if (isEdit) {
         await updateTx({ variables: { id: transaction!.id, input } });
-        toast.success('Transação atualizada');
       } else {
         await createTx({ variables: { input } });
-        toast.success('Transação criada');
       }
+      await client.refetchQueries({ include: ['Transactions', 'Dashboard', 'Categories'] });
+      toast.success(isEdit ? 'Transação atualizada' : 'Transação criada');
       onOpenChange(false);
     } catch (e: any) {
       toast.error(e.message ?? 'Erro ao salvar');

@@ -39,9 +39,9 @@ export default function Dashboard() {
           ) : (
             <>
               {stats!.recentTransactions.map((t) => <TransactionRow key={t.id} transaction={t} />)}
-              <div className="border-t border-gray-100 px-5 py-3">
+              <div className="flex justify-center border-t border-gray-100 px-5 py-3">
                 <Button variant="ghost" onClick={() => setOpen(true)} className="text-brand-base">
-                  <Plus className="size-4" /> Nova transação <ChevronRight className="size-3" />
+                  <Plus className="size-4" /> Nova transação
                 </Button>
               </div>
             </>

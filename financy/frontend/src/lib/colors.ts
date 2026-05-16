@@ -32,3 +32,13 @@ export const SWATCH_CLASSES: Record<CategoryColor, string> = {
   yellow: 'bg-cat-yellow-base',
   green:  'bg-cat-green-base',
 };
+
+export const RING_CLASSES: Record<CategoryColor, string> = {
+  blue:   'ring-cat-blue-base',
+  purple: 'ring-cat-purple-base',
+  pink:   'ring-cat-pink-base',
+  red:    'ring-cat-red-base',
+  orange: 'ring-cat-orange-base',
+  yellow: 'ring-cat-yellow-base',
+  green:  'ring-cat-green-base',
+};

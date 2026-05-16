@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { CATEGORY_ICONS, ICON_COMPONENTS, type CategoryIconKey } from '@/lib/icons';
-import { CATEGORY_COLORS, SWATCH_CLASSES, type CategoryColor } from '@/lib/colors';
+import { CATEGORY_COLORS, SWATCH_CLASSES, RING_CLASSES, type CategoryColor } from '@/lib/colors';
 import { categorySchema, type CategoryForm } from '@/lib/validation';
 import { CREATE_CATEGORY, UPDATE_CATEGORY } from '@/graphql/categories';
 
@@ -99,11 +99,13 @@ export function CategoryDialog({
                     return (
                       <button type="button" key={key} onClick={() => field.onChange(key)}
                         className={cn(
-                          'flex size-9 items-center justify-center rounded-md border text-gray-600',
-                          selected ? 'border-brand-base bg-brand-base/10 text-brand-base' : 'border-gray-200',
+                          'flex size-10 items-center justify-center rounded-md border text-gray-500 transition',
+                          selected
+                            ? 'border-brand-base bg-brand-base/10 text-brand-base'
+                            : 'border-gray-200 hover:border-gray-300',
                         )}
                       >
-                        <Icon className="size-4" />
+                        <Icon className="size-5" />
                       </button>
                     );
                   })}
@@ -117,15 +119,15 @@ export function CategoryDialog({
               control={control}
               name="color"
               render={({ field }) => (
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   {CATEGORY_COLORS.map((c) => {
                     const selected = field.value === c;
                     return (
                       <button type="button" key={c} onClick={() => field.onChange(c)}
                         className={cn(
-                          'size-7 rounded-full ring-offset-2',
+                          'size-9 rounded-full transition',
                           SWATCH_CLASSES[c],
-                          selected && 'ring-2 ring-offset-white ring-current',
+                          selected && cn('ring-2 ring-offset-2 ring-offset-white', RING_CLASSES[c]),
                         )}
                         aria-label={c}
                       />

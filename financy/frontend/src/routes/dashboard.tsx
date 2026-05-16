@@ -60,9 +60,9 @@ export default function Dashboard() {
           ) : (
             <ul>
               {stats!.categoriesSummary.map((s) => (
-                <li key={s.category.id} className="grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b border-gray-100 px-5 py-3 last:border-b-0">
+                <li key={s.category.id} className="grid grid-cols-[auto_1fr_auto] items-center gap-3 border-b border-gray-100 px-5 py-3 last:border-b-0">
                   <CategoryTag color={s.category.color as CategoryColor} label={s.category.title} />
-                  <span className="text-sm text-gray-500 whitespace-nowrap">{s.count} {s.count === 1 ? 'item' : 'itens'}</span>
+                  <span className="text-sm text-gray-500 whitespace-nowrap text-right">{s.count} {s.count === 1 ? 'item' : 'itens'}</span>
                   <span className="text-sm font-semibold text-gray-700 whitespace-nowrap">{formatBRL(s.totalAmount)}</span>
                 </li>
               ))}

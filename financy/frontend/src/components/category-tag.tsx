@@ -5,7 +5,7 @@ export function CategoryTag({
   color, label, className,
 }: { color: CategoryColor; label: string; className?: string }) {
   return (
-    <span className={cn('inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium', TAG_CLASSES[color], className)}>
+    <span className={cn('inline-flex items-center rounded-full px-3 py-1 text-xs font-medium', TAG_CLASSES[color], className)}>
       {label}
     </span>
   );

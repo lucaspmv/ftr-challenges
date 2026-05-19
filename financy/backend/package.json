@@ -4,12 +4,15 @@
   "description": "",
   "main": "dist/server.js",
   "scripts": {
+    "predev": "npm run codegen",
     "dev": "tsx watch src/server.ts",
+    "prebuild": "npm run codegen",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/server.js",
     "codegen": "graphql-codegen --config codegen.ts",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
+    "pretest": "DATABASE_URL=file:./test.db prisma migrate deploy",
     "test": "vitest run",
     "test:watch": "vitest"
   },
